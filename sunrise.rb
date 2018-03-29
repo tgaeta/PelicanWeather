@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'rubygems'
+require 'bundler/setup'
 require 'gemoji'
 require 'pry'
-load    'twitter_client'
-load    'dark_sky'
-load    'locations'
+load    'twitter_client.rb'
+load    'dark_sky.rb'
+load    'locations.rb'
 
 rise = Emoji.find_by_alias('sunrise').raw
 set  = Emoji.find_by_alias('city_sunset').raw
@@ -25,9 +27,10 @@ Locations.bay_area.each do |loc, lat_long|
 
   if event.nil?
     puts 'Not sunrise or sunset time yet'
+    exit
   else
     time_of_day = event.include?('rise') ? 'morning' : 'evening'
-    tweet       = "Good #{time_of_day}, #{loc}. It's #{event}. Outlook: #{outlook}"
-    client.update(tweet)
+    tweet = "Good #{time_of_day}, #{loc}. It's #{event}. Outlook: #{outlook}"
+    TwitterClient.client.update(tweet)
   end
 end

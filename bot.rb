@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'rubygems'
+require 'bundler/setup'
 require 'gemoji'
 require 'pry'
 load    'twitter_client.rb'
@@ -30,11 +32,11 @@ Locations.bay_area.each do |loc, lat_long|
   emoji_alias        = emojis_by_icon.fetch(current_weather.icon, 'sunny')
   icon               = Emoji.find_by_alias(emoji_alias).raw
 
-  tweet = format("Currently in #{loc} it's %{temperature}° & %{summary} %{icon}",
+  tweet = format("It's %{time} in #{loc} - Currently, it's %{temperature}° & %{summary} %{icon} #PelicanWeather",
                  temperature: current_weather.temperature.round,
                  summary: current_weather.summary.downcase,
-                 icon: icon)
-
+                 icon: icon,
+                 time: Time.now.strftime('%I:%M %p'))
   TwitterClient.client.update(tweet)
 
   if alert
